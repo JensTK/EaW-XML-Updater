@@ -31,7 +31,8 @@ public partial class MainWindow : Window
         {
             FolderTextBox.Content = dialog.FolderName;
             DirectoryInfo dir = new DirectoryInfo(dialog.FolderName);
-            xmlFiles = dir.GetFiles("*.xml", SearchOption.AllDirectories);
+            //xmlFiles = dir.GetFiles("*.xml", SearchOption.AllDirectories);
+            xmlFiles = dir.GetFiles("*.xml", SearchOption.TopDirectoryOnly);
             FileListLabel.Content = "Detected XML files: " + xmlFiles.Length;
             foreach (var file in xmlFiles)
             {
@@ -66,7 +67,8 @@ public partial class MainWindow : Window
                 string trimmedLine = line.Trim();
                 if (trimmedLine.StartsWith(xmlStartTag))
                 {
-                    string valueString = trimmedLine.Substring(xmlStartTag.Length, trimmedLine.IndexOf('/') - 1 - xmlStartTag.Length);
+                    string valueString = trimmedLine.Substring(xmlStartTag.Length, trimmedLine.Length - (xmlStartTag.Length * 2) - 1); // ???
+                    // <Space_FOW_Reveal_Range>6000.0</Space_FOW_Reveal_Range>
                     double value = double.Parse(valueString);
                     value *= multiplier;
                     updatedLines[i] = line.Replace(valueString, value.ToString("0.0"));
