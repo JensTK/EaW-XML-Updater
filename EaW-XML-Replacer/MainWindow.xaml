@@ -1,0 +1,30 @@
+﻿<Window x:Class="EaW_XML_Replacer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EaW_XML_Replacer"
+        mc:Ignorable="d"
+        Title="EaW XML Modder" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="10">
+            <Button Height="25" Name="FolderSelectButton" Click="FolderSelectButton_OnClick">Select directory...</Button>
+            <Button Height="25" Name="MultSpaceButton" Click="MultSpaceViewButton_OnClick">Multiply space view range by:</Button>
+            <Button Height="25" Name="MultGroundViewButton" Click="MultGroundViewButton_OnClick">Multiply ground view range by:</Button>
+            <Label Name="FileListLabel" Height="25">Detected XML files: 0</Label>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="10">
+            <Label Height="25" Name="FolderTextBox">No directory selected</Label>
+            <TextBox Height="25" Name="MultSpaceViewMultiplierBox">3</TextBox>
+            <TextBox Height="25" Name="MultGroundViewMultiplierBox">2</TextBox>
+            <StackPanel Name="FileListPanel" CanVerticallyScroll="True"></StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
