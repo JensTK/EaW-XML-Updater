@@ -15,13 +15,15 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="10">
-            <Button Height="25" Name="FolderSelectButton" Click="FolderSelectButton_OnClick">Select directory...</Button>
-            <Button Height="25" Name="MultSpaceButton" Click="MultSpaceViewButton_OnClick">Multiply space view range by:</Button>
-            <Button Height="25" Name="MultGroundViewButton" Click="MultGroundViewButton_OnClick">Multiply ground view range by:</Button>
+            <Button Height="25" Name="SourceSelectButton" Click="SourceSelectButton_OnClick">Select source dir...</Button>
+            <Button Height="25" Name="TargetSelectButton" Click="TargetSelectButton_OnClick">Select target dir...</Button>
+            <Button Height="25" Name="MultSpaceViewButton" IsEnabled="False" Click="MultSpaceViewButton_OnClick">Multiply space unit view range by:</Button>
+            <Button Height="25" Name="MultGroundViewButton" IsEnabled="False" Click="MultGroundViewButton_OnClick">Multiply ground unit view range by:</Button>
             <Label Name="FileListLabel" Height="25">Detected XML files: 0</Label>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="10">
-            <Label Height="25" Name="FolderTextBox">No directory selected</Label>
+            <Label Height="25" Name="SourceTextBox">No directory selected</Label>
+            <Label Height="25" Name="TargetTextBox">No directory selected</Label>
             <TextBox Height="25" Name="MultSpaceViewMultiplierBox">3</TextBox>
             <TextBox Height="25" Name="MultGroundViewMultiplierBox">2</TextBox>
             <StackPanel Name="FileListPanel" CanVerticallyScroll="True"></StackPanel>

@@ -18,46 +18,83 @@ namespace EaW_XML_Replacer;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private FileInfo[]? xmlFiles;
+    private DirectoryInfo? sourceDirectory = null;
+    private DirectoryInfo? targetDirectory = null;
+    private FileInfo[]? xmlFiles = null;
     public MainWindow()
     {
         InitializeComponent();
     }
+    
+    private void ToggleEditButtons()
+    {
+        bool enable = sourceDirectory != null && targetDirectory != null;
+        MultGroundViewButton.IsEnabled = enable;
+        MultSpaceViewButton.IsEnabled = enable;
+    }
 
-    private void FolderSelectButton_OnClick(object sender, RoutedEventArgs e)
+    private void ToggleEditButtons(bool enabled)
+    {
+        MultGroundViewButton.IsEnabled = enabled;
+        MultSpaceViewButton.IsEnabled = enabled;
+    }
+
+    private void SourceSelectButton_OnClick(object sender, RoutedEventArgs e)
     {
         OpenFolderDialog dialog = new OpenFolderDialog();
         if (dialog.ShowDialog() == true)
         {
-            FolderTextBox.Content = dialog.FolderName;
-            DirectoryInfo dir = new DirectoryInfo(dialog.FolderName);
+            SourceTextBox.Content = dialog.FolderName;
+            sourceDirectory = new DirectoryInfo(dialog.FolderName);
             //xmlFiles = dir.GetFiles("*.xml", SearchOption.AllDirectories);
-            xmlFiles = dir.GetFiles("*.xml", SearchOption.TopDirectoryOnly);
+            xmlFiles = sourceDirectory.GetFiles("*.xml", SearchOption.AllDirectories);
             FileListLabel.Content = "Detected XML files: " + xmlFiles.Length;
-            foreach (var file in xmlFiles)
+            /*foreach (var file in xmlFiles)
             {
                 //Console.WriteLine(file.FullName);
                 Label fileNameLabel = new Label();
                 fileNameLabel.Height = 25;
                 fileNameLabel.Content = file.Name;
                 FileListPanel.Children.Add(fileNameLabel);
-            }
+            }*/
         }
+        ToggleEditButtons();
+    }
+    
+    private void TargetSelectButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        OpenFolderDialog dialog = new OpenFolderDialog();
+        if (dialog.ShowDialog() == true)
+        {
+            TargetTextBox.Content = dialog.FolderName;
+            targetDirectory = new DirectoryInfo(dialog.FolderName);
+        }
+        ToggleEditButtons();
     }
 
     private void MultiplyXmlValues(string xmlStartTag, double multiplier)
     {
+        // replikere mappestrukturen i target
         if (xmlFiles is null || xmlFiles.Length == 0)
         {
             MessageBox.Show("No XML files found in selected folder.");
             return;
         }
+
+        if (sourceDirectory is null || targetDirectory is null)
+        {
+            throw new Exception("Source and Target are required.");
+        }
+        
         int linesUpdated = 0;
         int filesUpdated = 0;
-        DirectoryInfo? writeDir = null;
         
         foreach (var file in xmlFiles)
         {
+            if (file.DirectoryName is null)
+            {
+                throw new Exception("Directory not found.");
+            }
             bool fileUpdated = false;
             string[] lines = File.ReadAllLines(file.FullName);
             string[] updatedLines = new string[lines.Length];
@@ -70,10 +107,13 @@ public partial class MainWindow : Window
                     string valueString = trimmedLine.Substring(xmlStartTag.Length, trimmedLine.Length - (xmlStartTag.Length * 2) - 1); // ???
                     // <Space_FOW_Reveal_Range>6000.0</Space_FOW_Reveal_Range>
                     double value = double.Parse(valueString);
-                    value *= multiplier;
-                    updatedLines[i] = line.Replace(valueString, value.ToString("0.0"));
-                    linesUpdated++;
-                    fileUpdated = true;
+                    if (value > 0)
+                    {
+                        value *= multiplier;
+                        updatedLines[i] = line.Replace(valueString, value.ToString("0.0"));
+                        linesUpdated++;
+                        fileUpdated = true;
+                    }
                 }
                 else
                 {
@@ -83,10 +123,7 @@ public partial class MainWindow : Window
             if (fileUpdated)
             {
                 filesUpdated++;
-                if (writeDir is null)
-                {
-                    writeDir = Directory.CreateDirectory(file.DirectoryName + "/updated");
-                }
+                DirectoryInfo writeDir = Directory.CreateDirectory(file.DirectoryName.Replace(sourceDirectory.FullName, targetDirectory.FullName));
                 File.WriteAllLines(writeDir.FullName + "/" + file.Name, updatedLines);
             }
         }
@@ -109,7 +146,7 @@ public partial class MainWindow : Window
     {
         if (double.TryParse(MultGroundViewMultiplierBox.Text, out double multValue))
         {
-            MultiplyXmlValues("<Ground_FOW_Reveal_Range>", multValue);
+            MultiplyXmlValues("<Land_FOW_Reveal_Range>", multValue);
         }
         else
         {
