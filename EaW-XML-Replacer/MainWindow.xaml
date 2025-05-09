@@ -16,9 +16,14 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="10">
             <Button Height="25" Name="SourceSelectButton" Click="SourceSelectButton_OnClick">Select source dir...</Button>
-            <Button Height="25" Name="TargetSelectButton" Click="TargetSelectButton_OnClick">Select target dir...</Button>
+            <Button Height="25" Name="BackupSelectButton" Click="BackupSelectButton_OnClick">Select backup dir...</Button>
             <Button Height="25" Name="MultSpaceViewButton" IsEnabled="False" Click="MultSpaceViewButton_OnClick">Multiply space unit view range by:</Button>
             <Button Height="25" Name="MultGroundViewButton" IsEnabled="False" Click="MultGroundViewButton_OnClick">Multiply ground unit view range by:</Button>
+            <Button Height="25" Name="SetGcCameraHeightButton" IsEnabled="False" Click="SetGcCameraHeightButton_OnClick">Set GC camera height to:</Button>
+            <Button Height="25" Name="SetGroundCameraHeightButton" IsEnabled="False" Click="SetGroundCameraHeightButton_OnClick">Set ground camera height to:</Button>
+            <Button Height="25" Name="SetGroundCameraFovButton" IsEnabled="False" Click="SetGroundCameraFovButton_OnClick">Set ground camera FOV to:</Button>
+            <Button Height="25" Name="SetSpaceCameraHeightButton" IsEnabled="False" Click="SetSpaceCameraHeightButton_OnClick">Set space camera height to:</Button>
+            <Button Height="25" Name="SetSpaceCameraFovButton" IsEnabled="False" Click="SetSpaceCameraFovButton_OnClick">Set space camera FOV to:</Button>
             <Label Name="FileListLabel" Height="25">Detected XML files: 0</Label>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="10">
@@ -26,6 +31,11 @@
             <Label Height="25" Name="TargetTextBox">No directory selected</Label>
             <TextBox Height="25" Name="MultSpaceViewMultiplierBox">3</TextBox>
             <TextBox Height="25" Name="MultGroundViewMultiplierBox">2</TextBox>
+            <TextBox Height="25" Name="GcCameraHeightBox"></TextBox>
+            <TextBox Height="25" Name="GroundCameraHeightBox"></TextBox>
+            <TextBox Height="25" Name="GroundCameraFovBox"></TextBox>
+            <TextBox Height="25" Name="SpaceCameraHeightBox"></TextBox>
+            <TextBox Height="25" Name="SpaceCameraFovBox"></TextBox>
             <StackPanel Name="FileListPanel" CanVerticallyScroll="True"></StackPanel>
         </StackPanel>
     </Grid>
