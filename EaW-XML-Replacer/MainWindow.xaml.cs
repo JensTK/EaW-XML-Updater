@@ -97,12 +97,12 @@ public partial class MainWindow : Window
         ToggleEditButtons();
     }
 
-    private void MultiplyXmlValues(string xmlStartTag, double multiplier)
+    private int MultiplyXmlValues(string xmlStartTag, double multiplier)
     {
         if (xmlFiles is null || xmlFiles.Length == 0)
         {
             MessageBox.Show("No XML files found in selected folder.");
-            return;
+            return 0;
         }
 
         if (sourceDirectory is null || backupDirectory is null)
@@ -119,7 +119,7 @@ public partial class MainWindow : Window
                 filesUpdated++;
             }
         }
-        MessageBox.Show($"Updated in {filesUpdated} files.");
+        return filesUpdated;
     }
 
     private double? ReadValueInFile(FileInfo file, string xmlStartTag, string? xmlSectionTag = null)
@@ -177,7 +177,7 @@ public partial class MainWindow : Window
             }
             if (((xmlSectionTag is not null && isInSection) || xmlSectionTag is null) && trimmedLine.StartsWith(xmlStartTag))
             {
-                string valueString = trimmedLine.Substring(xmlStartTag.Length, trimmedLine.Length - (xmlStartTag.Length * 2) - 1); // ???
+                string valueString = trimmedLine.Substring(xmlStartTag.Length, trimmedLine.IndexOf("</") -xmlStartTag.Length); // ???
                 // <Space_FOW_Reveal_Range>6000.0</Space_FOW_Reveal_Range>
                 double value = double.Parse(valueString);
                 if (value > 0)
@@ -211,7 +211,8 @@ public partial class MainWindow : Window
     {
         if (double.TryParse(MultSpaceViewMultiplierBox.Text, out double multValue))
         {
-            MultiplyXmlValues(SpaceFowRevealRangeTag, multValue);
+            int updatedFiles = MultiplyXmlValues(SpaceFowRevealRangeTag, multValue);
+            MessageBox.Show($"Updated {updatedFiles} file(s)");
         }
         else
         {
@@ -223,7 +224,8 @@ public partial class MainWindow : Window
     {
         if (double.TryParse(MultGroundViewMultiplierBox.Text, out double multValue))
         {
-            MultiplyXmlValues(LandFowRevealRangeTag, multValue);
+            int updatedFiles = MultiplyXmlValues(LandFowRevealRangeTag, multValue);
+            MessageBox.Show($"Updated {updatedFiles} file(s)");
         }
         else
         {
@@ -239,7 +241,14 @@ public partial class MainWindow : Window
         }
         if (double.TryParse(GcCameraHeightBox.Text, out double setValue))
         {
-            SetValueInFile(GameConstantsFile, GmcInitialPullbackDistanceTag, _ => setValue);
+            if (SetValueInFile(GameConstantsFile, GmcInitialPullbackDistanceTag, _ => setValue))
+            {
+                MessageBox.Show("Value set.");
+            }
+            else
+            {
+                MessageBox.Show("Value not set.");
+            }
         }
         else
         {
@@ -256,7 +265,14 @@ public partial class MainWindow : Window
         }
         if (double.TryParse(GroundCameraHeightBox.Text, out double setValue))
         {
-            SetValueInFile(TacticalCamerasFile, DistanceMaxTag, _ => setValue, TacticalCameraLandModeTag);
+            if (SetValueInFile(TacticalCamerasFile, DistanceMaxTag, _ => setValue, TacticalCameraLandModeTag)) 
+            {
+                MessageBox.Show("Value set.");
+            }
+            else
+            {
+                MessageBox.Show("Value not set.");
+            }
         }
         else
         {
@@ -276,9 +292,16 @@ public partial class MainWindow : Window
         }
         if (double.TryParse(GroundCameraFovBox.Text, out double setValue))
         {
-            SetValueInFile(TacticalCamerasFile, FovDefaultTag, _ => setValue, TacticalCameraLandModeTag);
-            SetValueInFile(TacticalCamerasFile, FovMaxTag, _ => setValue, TacticalCameraLandModeTag);
-            SetValueInFile(TacticalCamerasFile, FovMinTag, _ => setValue, TacticalCameraLandModeTag);
+            if (SetValueInFile(TacticalCamerasFile, FovDefaultTag, _ => setValue, TacticalCameraLandModeTag)
+                && SetValueInFile(TacticalCamerasFile, FovMaxTag, _ => setValue, TacticalCameraLandModeTag)
+                && SetValueInFile(TacticalCamerasFile, FovMinTag, _ => setValue, TacticalCameraLandModeTag))
+            {
+                MessageBox.Show("Value set.");
+            }
+            else
+            {
+                MessageBox.Show("Value not set.");
+            }
         }
         else
         {
@@ -295,7 +318,14 @@ public partial class MainWindow : Window
         }
         if (double.TryParse(SpaceCameraHeightBox.Text, out double setValue))
         {
-            SetValueInFile(TacticalCamerasFile, DistanceMaxTag, _ => setValue, TacticalCameraSpaceModeTag);
+            if (SetValueInFile(TacticalCamerasFile, DistanceMaxTag, _ => setValue, TacticalCameraSpaceModeTag))
+            {
+                MessageBox.Show("Value set.");
+            }
+            else
+            {
+                MessageBox.Show("Value not set.");
+            }
         }
         else
         {
@@ -311,9 +341,16 @@ public partial class MainWindow : Window
         }
         if (double.TryParse(SpaceCameraFovBox.Text, out double setValue))
         {
-            SetValueInFile(TacticalCamerasFile, FovDefaultTag, _ => setValue, TacticalCameraSpaceModeTag);
-            SetValueInFile(TacticalCamerasFile, FovMaxTag, _ => setValue, TacticalCameraSpaceModeTag);
-            SetValueInFile(TacticalCamerasFile, FovMinTag, _ => setValue, TacticalCameraSpaceModeTag);
+            if (SetValueInFile(TacticalCamerasFile, FovDefaultTag, _ => setValue, TacticalCameraSpaceModeTag)
+                && SetValueInFile(TacticalCamerasFile, FovMaxTag, _ => setValue, TacticalCameraSpaceModeTag)
+                && SetValueInFile(TacticalCamerasFile, FovMinTag, _ => setValue, TacticalCameraSpaceModeTag))
+            {
+                MessageBox.Show("Value set.");
+            }
+            else
+            {
+                MessageBox.Show("Value not set.");
+            }
         }
         else
         {
